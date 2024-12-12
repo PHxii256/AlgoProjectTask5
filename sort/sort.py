@@ -4,7 +4,7 @@ from quicksort import quickSort
 
 DictList = [] #Dict for a single csv record
 firstLastNamesList = []
-with open(r'data.csv', 'r', encoding="utf8") as csv_file:
+with open(r'../data.csv', 'r', encoding="utf8") as csv_file:
     reader = csv.DictReader(csv_file)
 
     for line in reader:

@@ -5,8 +5,8 @@ from B_Tree import BTree
 start_time = time.time()
 
 def main():
-    btree = BTree(7) # for sepcfiying the degree of the tree (minimum 4 children and 3 keys, max 8 children and 7 keys)
-    with open("data.csv", "r") as file:
+    btree = BTree(7) # for sepcfiying the degree of the tree 
+    with open("../data.csv", "r") as file:
         reader = csv.DictReader(file)
         for row in reader:
             btree.insert(row["city"], row)
