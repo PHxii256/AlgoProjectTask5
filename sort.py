@@ -23,9 +23,9 @@ with open(r'data.csv', 'r', encoding="utf8") as csv_file:
     mergeSort(DictList,0, len(DictList) -1)
 
 with open(r'sorted_data.csv', "w", encoding="utf8",newline='') as sorted_csv_file:
-    w = csv.DictWriter(sorted_csv_file, DictList[0].keys())
-    w.writeheader()
-    w.writerows(DictList)
+    sort = csv.DictWriter(sorted_csv_file, DictList[0].keys())
+    sort.writeheader()
+    sort.writerows(DictList)
     sorted_csv_file.close()
 
 print("\n sorted records by names (merge sort): \n")
