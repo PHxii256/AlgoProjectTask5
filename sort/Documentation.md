@@ -5,15 +5,15 @@
 - **Algorithm Type**:
     - Merge Sort is a **divide-and-conquer** algorithm that divides the array into halves, recursively sorts them, and merges the results.
 - **Time Complexity**:
-    - **Best Case**: $O(nlog⁡n)$
-    - **Average Case**: $O(nlog⁡n)$
-    - **Worst Case**: $O(nlog⁡n)$
+    - **Best Case**: O(nlog⁡n)
+    - **Average Case**: O(nlog⁡n)
+    - **Worst Case**: O(nlog⁡n)
 - **Space Complexity**:
-    - Requires $O(n)$ additional space for merging.
+    - Requires O(n) additional space for merging.
 - **Advantages**:
     - Merge Sort is **stable**, <u>meaning duplicate entries retain their relative order</u>.
     - Performs well on **linked lists** (avoids extra memory for rearranging).
-    - Guaranteed $O(nlog⁡n)$ performance regardless of data distribution.
+    - Guaranteed O(nlog⁡n) performance regardless of data distribution.
 - **Disadvantages**:
     - Can be slower for small datasets.
 
@@ -87,18 +87,18 @@ def mergeSort(arr, l, r):
 1. **Algorithm Type**:
     - Quick Sort is also a **divide-and-conquer** algorithm but partitions the array around a pivot and recursively sorts the partitions.
 2. **Time Complexity**:
-    - **Best Case**: $O(nlog⁡n)$
-    - **Average Case**: $O(nlog⁡n)$
-    - **Worst Case**: $O(n^2)$ (occurs when pivot selection is poor, e.g., sorted or nearly sorted data).
+    - **Best Case**: O(nlog⁡n)
+    - **Average Case**: O(nlog⁡n)
+    - **Worst Case**: O(n^2) (occurs when pivot selection is poor, e.g., sorted or nearly sorted data).
 3. **Space Complexity**:
-    - Requires $O(log⁡n)$ space for recursion (in-place algorithm).
+    - Requires O(log⁡n) space for recursion (in-place algorithm).
 4. **Stability**:
     - Quick Sort is typically **not stable**, but it can be made stable with modifications.
 5. **Advantages**:
     - Often faster than Merge Sort for **in-place sorting** due to lower constant factors.
     - Minimal additional memory usage.
 6. **Disadvantages**:
-    - Worst-case time complexity can degrade to $O(n2)$.
+    - Worst-case time complexity can degrade to O(n2).
 
 ```python 
 def quickSort(names):
@@ -117,8 +117,8 @@ def quickSort(names):
 
 | **Criteria**                | **Merge Sort**                                    | **Quick Sort**                              |
 | --------------------------- | ------------------------------------------------- | ------------------------------------------- |
-| **Time Complexity**         | $O(nlog⁡n)$ in all cases                          | $O(nlog⁡n)$ on average, $O(n^2)$ worst-case |
-| **Space Complexity**        | $O(n)$                                            | $O(log⁡n)$                                  |
+| **Time Complexity**         | O(nlog⁡n) in all cases                              | O(nlog⁡n) on average, O(n^2) worst-case |
+| **Space Complexity**        | O(n)                                                | O(log⁡n)                                  |
 | **Stability**               | Stable                                            | Not stable                                  |
 | **Practical Speed**         | Slower than Quick Sort for small datasets         | Faster for small datasets                   |
 | **Dataset Characteristics** | Handles duplicate and multi-column sorting better | Works better with random data distribution  |
@@ -127,4 +127,4 @@ def quickSort(names):
 
 **Merge sort is better for our case cuz it is more stable and better in worse case scenarios.**
 
-while quick sort is more memory-efficient, it can degrade to $n^2$.
+while quick sort is more memory-efficient, it can degrade to n^2.
