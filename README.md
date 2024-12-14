@@ -484,15 +484,7 @@ plt.show()
 |---|---|---|---|
 |B-Tree|0.8844|0.7633|0.6630|
 |Linear filtering|600|3000|6000|
-^searching
 
-```chart
-type: line
-id: searching
-layout: rows
-width: 80%
-beginAtZero: true
-```
 
 # Task 4
 
@@ -624,12 +616,4 @@ Which is better for my system? Quick Sort is better in our case, We suspect it t
 | ----- | ------ | ------ | ------ |
 | Merge | 0.0043 | 0.0579 | 0.9484 |
 | Quick | 0.0025 | 0.0186 | 0.2663 |
-^sorting
 
-```chart
-type: line
-id: sorting
-layout: rows
-width: 80%
-beginAtZero: true
-```
