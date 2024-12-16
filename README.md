@@ -1,3 +1,5 @@
+You need obsidian charts plugin to see all the charts!
+
 # Phone Book System Overview
 
 This system serves as a tool to store and manage contact information. The key fields for each contact include:
@@ -23,8 +25,6 @@ Each task corresponds to a specific operation on the phone book, with different 
     - Algorithms: Array-based Deletion, Linked-List Based Deletion
 5. **Sort Contacts by Name**
     - Algorithms: Merge Sort, Quick Sort
-
-For my part, I am focusing on **Task 2**: **Retrieve Contact by Phone Number**, where I will compare two different insertion algorithms: **Linear Search** and **Hash Map**. The test will be conducted using a CSV file in Python.
 
 ---
 
@@ -144,7 +144,6 @@ print(f"Took {end_time - start_time:.4f} seconds")
 - **List-Based Approach**: With a time complexity of O(n) for searching and inserting, the list-based approach becomes slower as the dataset grows. In this case, with 100 million elements, the search took several seconds.
     
 - **Hash Map-Based Approach**: With an average time complexity of O(1) for both lookup and insertion, the hash map approach is much faster and more efficient, even with large datasets.
-    
 
 ---
 
@@ -268,228 +267,409 @@ print(insert_hash_map(csv_file, new_entry_str))
 # Task 2
 
 **Assigned to:** Omar Sherif -> 200027721
-Not done yet
+
+```python
+import csv
+import math
+import time
+
+def load_csv(file_path):
+    """Load CSV data into a sorted list of dictionaries by phone_number."""
+    data = []
+    with open(file_path, "r") as csvfile:
+        reader = csv.DictReader(csvfile)
+        data.extend(row for row in reader)
+    data.sort(key=lambda x: x["phone_number"])
+    return data
+
+# Binary Search Implementation
+def binary_search(data, phone_number):
+    """Perform binary search to find a phone number in sorted data."""
+    low, high = 0, len(data) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if data[mid]["phone_number"] == phone_number:
+            return data[mid]
+        elif data[mid]["phone_number"] < phone_number:
+            low = mid + 1
+        else:
+            high = mid - 1
+    return None
+
+# Binary Search Usage and Timing
+def binary_search_main():
+    file_path = "data1000rows.csv"  # Path to the CSV file
+    data = load_csv(file_path)
+    search_number = "+351-656-361-0451"  # Replace with the phone number to search
+
+    # Measure and display Binary Search results
+    start_time = time.time()
+    result_binary = binary_search(data, search_number)
+    elapsed_time = time.time() - start_time
+
+    if result_binary:
+        print("Binary Search Result:", result_binary)
+    else:
+        print("Phone number not found (Binary Search).")
+    print(f"Binary Search took {elapsed_time:.6f} seconds.")
+
+# Jump Search Implementation
+def jump_search(data, phone_number):
+    """Perform jump search to find a phone number in sorted data."""
+    n = len(data)
+    step = int(math.sqrt(n))
+    prev = 0
+
+    while prev < n and data[min(prev + step, n) - 1]["phone_number"] < phone_number:
+        prev += step
+        if prev >= n:
+            return None
+
+    for i in range(prev, min(prev + step, n)):
+        if data[i]["phone_number"] == phone_number:
+            return data[i]
+    return None
+
+# Jump Search Usage and Timing
+def jump_search_main():
+    file_path = "data1000rows.csv"  # Path to the CSV file
+    data = load_csv(file_path)
+    search_number = "+351-656-361-0451"  # Replace with the phone number to search
+
+    # Measure and display Jump Search results
+    start_time = time.time()
+    result_jump = jump_search(data, search_number)
+    elapsed_time = time.time() - start_time
+
+    if result_jump:
+        print("Jump Search Result:", result_jump)
+    else:
+        print("Phone number not found (Jump Search).")
+    print(f"Jump Search took {elapsed_time:.6f} seconds.")
+
+if __name__ == "__main__":
+    print("Running Binary Search:")
+    binary_search_main()
+    print("\nRunning Jump Search:")
+    jump_search_main()
+```
 
 # Task 3
 
 **Assigned to:** Omar Asaad -> 200027710
+Our phonebook can be large, you could have hundreds of people maybe even thousands, all from different cities, so we need a fast and efficient algorithm to look people up quickly from their city names, 2 ways are B-Trees and Linear filtering.
 
-Our phonebook can be quite large, potentially containing hundreds or even thousands of people from different cities. Therefore, we need a fast and efficient algorithm to quickly look people up by their city names. Two common approaches for this are B-Trees and Linear Filtering.
+#### B-Trees
 
-### B-Trees
+A **B-tree** is a self-balancing **search tree** that maintains sorted data and allows efficient insertion, deletion, and search operations. It is widely used in database systems and file systems to organize large amounts of data that cannot fit entirely in memory.
 
-A **B-tree** is a self-balancing **search tree** that maintains sorted data, supporting efficient insertion, deletion, and search operations. It is widely used in database and file systems for managing large data sets that cannot entirely fit into memory.
-
-#### Key Features:
+##### Key Features:
 
 1. **Structure**:
-    - A B-tree node contains multiple keys and child pointers.
-    - Each node has a minimum (⌈m/2⌉-1) and maximum (m-1) number of keys, where **m** represents the tree's order (the maximum number of child pointers per node).
-    - All leaves are at the same level, ensuring the tree remains balanced.
+    - A B-tree node can contain multiple keys and child pointers.
+    - Each node has a minimum ( ⌈m/2⌉-1) and maximum (m-1) keys, where **m** is the tree's order (maximum number of child pointers per node).
+    - All leaves are at the same level, ensuring balance.
 2. **Properties**:
-    - Keys within a node are kept in sorted order.
-    - A node with `n` keys has `n+1` children, and the keys in the children's subtrees fall between the keys in the parent node.
-    - The B-tree dynamically grows and shrinks, minimizing unnecessary rebalancing.
+    - Keys in a node are kept in sorted order.
+    - For a node with `n` keys, it has `n+1` children, and keys in the children’s subtrees fall between the keys in the parent node.
+    - A B-tree grows and shrinks dynamically, avoiding excessive rebalancing.
 
-#### Time Complexity:
+##### Time Complexity:
+The search will take O(log n)
+##### Space Complexity:
+- **Space per node**: O(m), where m is the order of the tree.
+- **Total space**: Depends on the total number of keys stored, generally O(n), where  is the number of keys.
 
-- Searching takes **O(log n)** time.
+##### Technique
+ **B-Tree** belongs to **balanced search trees**
 
-#### Space Complexity:
 
-- **Space per node**: O(m), where **m** is the tree's order (maximum number of child pointers).
-- **Total space**: O(n), where **n** is the number of keys stored in the tree.
+```PYTHON
+import time
+start_time = time.time()
 
-```python
 class BTreeNode:
-
-    def __init__(self, t, leaf=False):
-        self.t = t
-        self.leaf = leaf
-        self.keys = []  # List of keys (cities)
-        self.values = []  # List of values (rows)
-        self.children = []  # List of children nodes
+    def __init__(self, t, leaf=False)
+        self.t = t
+        self.leaf = leaf
+        self.keys = []
+        self.values = []
+        self.children = []
 
 class BTree:
 
-    def __init__(self, t):
-        self.t = t  # Minimum degree (t)
-        self.root = BTreeNode(t, True)
+    def __init__(self, t):
+        self.t = t
+        self.root = BTreeNode(t, True)
 
-    def search(self, node, key):
-        i = 0
-        while i < len(node.keys) and key > node.keys[i]:
-            i += 1
-        if i < len(node.keys) and key == node.keys[i]:
-            return node.values[i]  # Return the corresponding row (value)
-        if node.leaf:
-            return None
-        return self.search(node.children[i], key)
+    def search(self, node, key):
+        i = 0
+        while i < len(node.keys) and key > node.keys[i]:
+            i += 1
+        if i < len(node.keys) and key == node.keys[i]:
+            return f"{node.values[i]}, \ntime: {execution_time:.7f}"
+        if node.leaf:
+            return None
+        return self.search(node.children[i], key)
 
-    def insert(self, key, value):
-        if len(self.root.keys) == 2 * self.t - 1:
-            new_root = BTreeNode(self.t, False)
-            new_root.children.append(self.root)
-            self.split_child(new_root, 0)
-            self.root = new_root
-        self.insert_non_full(self.root, key, value)
+    def insert(self, key, value):
+        if len(self.root.keys) == 2 * self.t - 1:
+            new_root = BTreeNode(self.t, False)
+            new_root.children.append(self.root)
+            self.split_child(new_root, 0)
+            self.root = new_root
+            
+        current_node = self.root
 
-    def insert_non_full(self, node, key, value):
-        i = len(node.keys) - 1
-        if node.leaf:
-            while i >= 0 and key < node.keys[i]:
-                i -= 1
-            node.keys.insert(i + 1, key)
-            node.values.insert(i + 1, value)
-        else:
-            while i >= 0 and key < node.keys[i]:
-                i -= 1
-            i += 1
-            if len(node.children[i].keys) == 2 * self.t - 1:
-                self.split_child(node, i)
-                if key > node.keys[i]:
-                    i += 1
-            self.insert_non_full(node.children[i], key, value)
+        while not current_node.leaf:
+            i = len(current_node.keys) - 1
+            while i >= 0 and key < current_node.keys[i]:
+                i -= 1
+            i += 1
+            if len(current_node.children[i].keys) == 2 * self.t - 1:
+                self.split_child(current_node, i)
+                if key > current_node.keys[i]:
+                    i += 1
 
-    def split_child(self, parent, index):
-        t = self.t
-        node = parent.children[index]
-        new_node = BTreeNode(t, node.leaf)
-        parent.keys.insert(index, node.keys[t - 1])
-        parent.values.insert(index, node.values[t - 1])
-        new_node.keys = node.keys[t:]
-        new_node.values = node.values[t:]
-        node.keys = node.keys[:t - 1]
-        node.values = node.values[:t - 1]
-        if not node.leaf:
-            new_node.children = node.children[t:]
-            node.children = node.children[:t]
-        parent.children.insert(index + 1, new_node)
+            current_node = current_node.children[i]
+        i = len(current_node.keys) - 1
+        while i >= 0 and key < current_node.keys[i]
+            i -= 1
+        current_node.keys.insert(i + 1, key)
+        current_node.values.insert(i + 1, value)
 
-    def print_tree(self, node, level=0):
-        print('Level', level, 'Keys:', node.keys)
-        if not node.leaf:
-            for child in node.children:
-                self.print_tree(child, level + 1)
+  
+    def split_child(self, parent, index):
+        t = self.t
+        node = parent.children[index]
+        new_node = BTreeNode(t, node.leaf)
+        parent.keys.insert(index, node.keys[t - 1])
+        parent.values.insert(index, node.values[t - 1])
+        new_node.keys = node.keys[t:]
+        new_node.values = node.values[t:]
+        node.keys = node.keys[:t - 1]
+        node.values = node.values[:t - 1]
+
+        if not node.leaf:
+            new_node.children = node.children[t:]
+            node.children = node.children[:t]
+        parent.children.insert(index + 1, new_node)
+
+  
+end_time = time.time()
+execution_time = end_time - start_time
 ```
 
-### Linear Filtering
-
-**Linear Filtering** refers to applying a linear operation, such as a convolution or spatial filter, to a dataset (e.g., a signal or image). The goal is often to smooth, enhance, or modify the data based on the applied filter.
-
-#### Key Features:
-
-- **Definition**: Linear filtering applies a filter (kernel or set of weights) to an input dataset to produce an output. In the case of a CSV file, it could mean processing rows based on certain criteria (e.g., summing values or applying a function across columns).
-- **Operations**:
-    - **Time Complexity**: For a CSV file with **n** rows and **m** columns, the time complexity is **O(n × m)**. This accounts for the operations required to read and process each row and column.
-    - **Space Complexity**: The space complexity is also **O(n × m)**, representing the memory required to store the data.
-
-#### Searching through a CSV File:
-
-- **Definition**: Searching for a specific key in a CSV file to retrieve corresponding values.
-- **Time Complexity**:
-    - **For 100 rows**: **O(100)**.
-    - **For 500 rows**: **O(500)**.
-    - **For 1000 rows**: **O(1000)**.
-    - Time complexity increases linearly with the number of rows.
-- **Space Complexity**: The space complexity is **O(n)**, as we may need to store intermediate search results or copies of data.
-
-### Summary:
-
-- **Linear Filtering** involves applying operations across all rows and columns of the CSV file, with both time and space complexities proportional to the number of rows and columns **O(n × m)**.
-- **Searching in a CSV file** for a key is a linear search operation, where time complexity grows linearly with the number of rows **O(n)** and space complexity is also **O(n)**.
-- Both methods are considered linear algorithms due to their direct relationship with the data size.
-
+#### Linear Filtering
+**Linear Filtering** is a simple and straightforward searching algorithm. It involves checking each element in a list (or file) one by one to find a target value. Here's a summary of its key aspects:
+##### Technique:
+- **Linear Search** belongs to a category of **comparison-based search algorithms**.
+- It is considered an **unoptimized search algorithm** due to its sequential nature.
+##### Time Complexity:
+- **Best Case**: O(1) – The target value is found in the first comparison.
+- **Worst Case**: O(n) – Every element in the list must be checked before finding the target (if the list is not sorted, n comparisons are necessary).
+- **Average Case**: O(n) – Similar to the worst case, as on average, the search requires checking half of the elements.
+##### Space Complexity:
+- O(1) – The amount of extra space required does not depend on the size of the input. The algorithm only requires a few variables for comparisons and indexes, irrespective of the list's size.
 ```python
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from PIL import Image
 
-def get_city_data(city, csv_file_path):
-    data = pd.read_csv(csv_file_path)
-    if city in data.iloc[:, 0].values:
-        row = data[data.iloc[:, 0] == city].iloc[0, 1:].values
-        return row
-    else:
-        return None
+import csv
+import time
 
-# Example usage with the uploaded file
-csv_file_path = '../data/data.csv'
-city = input("Enter the city name: ")
-city_row = get_city_data(city, csv_file_path)
-if city_row is not None:
-    print(f"Data for {city}: {city_row}")
-else:
-    print(f"City {city} not found in the data.")
+start_time = time.time()
 
-# Input arrays (example inputs, replace with actual data)
-X = np.array([[0, 0], [0, 0]])  # Replace with the actual image matrix
-corr = np.array([[1, 1], [1, 1]])  # Replace with the actual filter kernel
 
-# Padding sizes
-pad1 = corr.shape[0] - 1
-pad2 = corr.shape[1] - 1
+def linear_filter(city):
+    with open("../10k.csv") as file:
+        reader = csv.DictReader(file)
+        found = False
+        for row in reader:
+            if row['city'] == city:
+                return f"{row}, \ntime: {execution_time:.9f}"  
+        if not found:
+            return "No matching city found."
+            
+end_time = time.time()
+execution_time = end_time - start_time
 
-# Initialize output
-output = np.zeros_like(X, dtype=np.uint8)
 
-if corr.shape[0] == 1:
-    Y = np.zeros((X.shape[0], X.shape[1] + pad2))
-    n = 0
-    m = corr.shape[1] // 2
-    sz1 = Y.shape[0]
-    sz2 = Y.shape[1] - pad2
-elif corr.shape[1] == 1:
-    Y = np.zeros((X.shape[0] + pad1, X.shape[1]))
-    n = corr.shape[0] // 2
-    m = 0
-    sz1 = Y.shape[0] - pad1
-    sz2 = Y.shape[1]
-else:
-    Y = np.zeros((X.shape[0] + pad1, X.shape[1] + pad2))
-    n = corr.shape[0] // 2
-    m = corr.shape[1] // 2
-    sz1 = Y.shape[0] - pad1
-    sz2 = Y.shape[1] - pad2
+if __name__ == "__main__":
 
-# Copy X into padded Y
-for i in range(X.shape[0]):
-    for j in range(X.shape[1]):
-        Y[i + n, j + m] = X[i, j]
+    linear_filter()
 
-# Perform the filtering
-szcorr1 = corr.shape[0]
-szcorr2 = corr.shape[1]
-for i in range(sz1):
-    for j in range(sz2):
-        sum_val = 0
-        n_i = i
-        m_j = j
-        for a in range(szcorr1):
-            for b in range(szcorr2):
-                sum_val += Y[n_i, m_j] * corr[a, b]
-                m_j += 1
-            m_j = j
-            n_i += 1
-        output[i, j] = sum_val
-
-# Display the result
-plt.imshow(output, cmap='gray')
-plt.title('After linear filtering')
-plt.show()
 ```
 
-| |100 row|500 row|1000 row|
-|---|---|---|---|
-|B-Tree|0.8844|0.7633|0.6630|
-|Linear filtering|600|3000|6000|
+## which is better?
 
+**B-Tree** wins, simply because of its time complexity and speed, even though linear filter is close, that is due to the small dataset 
+and B-Tree will perform even better for bigger datasets with millions and billions of rows.
+
+|                  | 1000 row    | 10000 row   | 100000 row  |
+| ---------------- | ----------- | ----------- | ----------- |
+| B-Tree           | 0.000000167 | 0.000000145 | 0.000000132 |
+| Linear filtering | 0.000000477 | 0.000000715 | 0.000000954 |
+^searching
+
+```chart
+type: line
+id: searching
+layout: rows
+width: 80%
+beginAtZero: true
+```
 
 # Task 4
 
 **Assigned to:** Mohamed Badawy -> 200021612
-Not done yet
+
+**1. Array-based Deletion**  
+In an array-based approach, contacts are stored in a list, and we iterate through the list to locate and remove a contact based on its phone number.
+
+### Array-based Implementation
+
+```python
+class Contact:
+    def __init__(self, name, phone_number):
+        self.name = name
+        self.phone_number = phone_number
+
+    def __str__(self):
+        return f"{self.name}: {self.phone_number}"
+
+
+def delete_contact_array(contacts, phone_number):
+    for i, contact in enumerate(contacts):
+        if contact.phone_number == phone_number:
+            del contacts[i]
+            return f"Contact with phone number {phone_number} deleted."
+    return f"Contact with phone number {phone_number} not found."
+
+
+# Example Usage
+contacts_array = [
+    Contact("Alice", "123-456-7890"),
+    Contact("Bob", "234-567-8901"),
+    Contact("Charlie", "345-678-9012")
+]
+
+print("Before Deletion:")
+for contact in contacts_array:
+    print(contact)
+
+result = delete_contact_array(contacts_array, "234-567-8901")
+print(result)
+
+print("\nAfter Deletion:")
+for contact in contacts_array:
+    print(contact)
+```
+
+---
+
+**2. Linked-List-based Deletion**  
+The linked-list-based approach stores each contact in a node, linked sequentially. Deletion involves traversing the list to find the node with the specified phone number and updating pointers to unlink it.
+
+### Linked-List Implementation
+
+```python
+class Contact:
+    def __init__(self, name, phone_number):
+        self.name = name
+        self.phone_number = phone_number
+
+    def __str__(self):
+        return f"{self.name}: {self.phone_number}"
+
+
+class Node:
+    def __init__(self, contact=None):
+        self.contact = contact
+        self.next = None
+
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def append(self, contact):
+        new_node = Node(contact)
+        if not self.head:
+            self.head = new_node
+            return
+        last_node = self.head
+        while last_node.next:
+            last_node = last_node.next
+        last_node.next = new_node
+
+    def delete_contact_linked_list(self, phone_number):
+        current = self.head
+        previous = None
+
+        # If the head node holds the phone number
+        if current and current.contact.phone_number == phone_number:
+            self.head = current.next
+            return f"Contact with phone number {phone_number} deleted."
+
+        # Traverse the list to find the contact
+        while current and current.contact.phone_number != phone_number:
+            previous = current
+            current = current.next
+
+        if not current:  # Contact not found
+            return f"Contact with phone number {phone_number} not found."
+
+        # Unlink the node
+        previous.next = current.next
+        return f"Contact with phone number {phone_number} deleted."
+
+    def display(self):
+        current = self.head
+        while current:
+            print(current.contact)
+            current = current.next
+
+
+# Example Usage
+linked_list = LinkedList()
+linked_list.append(Contact("Alice", "123-456-7890"))
+linked_list.append(Contact("Bob", "234-567-8901"))
+linked_list.append(Contact("Charlie", "345-678-9012"))
+
+print("Before Deletion:")
+linked_list.display()
+
+result = linked_list.delete_contact_linked_list("234-567-8901")
+print(result)
+
+print("\nAfter Deletion:")
+linked_list.display()
+```
+
+---
+
+**Comparison of Array-based and Linked-List-based Deletion**
+
+|**Aspect**|**Array-based Deletion**|**Linked-List-based Deletion**|
+|---|---|---|
+|**Search Complexity**|O(n)|O(n)|
+|**Deletion Complexity**|O(n) (due to shifting)|O(1) (adjusting pointers)|
+|**Space Complexity**|O(n)|O(n) (plus extra memory for pointers)|
+|**Memory Management**|Contiguous memory|Non-contiguous memory|
+|**Random Access**|O(1)|O(n) (must traverse the list)|
+|**Ease of Implementation**|Simple|Slightly more complex|
+
+---
+
+**When to Use Each Approach**
+
+1. **Array-based Approach**
+    
+    - Ideal for small or relatively static contact lists.
+    - Provides random access to elements and simplicity in implementation.
+2. **Linked-List-based Approach**
+    
+    - Suitable for large or frequently changing contact lists.
+    - Efficient for dynamic size and frequent deletions without shifting elements.
 
 # Task 5
 
@@ -616,4 +796,14 @@ Which is better for my system? Quick Sort is better in our case, We suspect it t
 | ----- | ------ | ------ | ------ |
 | Merge | 0.0043 | 0.0579 | 0.9484 |
 | Quick | 0.0025 | 0.0186 | 0.2663 |
+^sorting
+
+```chart
+type: line
+id: sorting
+layout: rows
+width: 80%
+beginAtZero: true
+```
+
 
